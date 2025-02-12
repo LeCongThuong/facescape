@@ -1,5 +1,5 @@
 # python requirements
-cmake
+# cmake
 numpy
 dlib
 opencv-python
@@ -8,5 +8,4 @@ scipy
 trimesh
 pyrender
 openmesh
-sklearn
 tqdm

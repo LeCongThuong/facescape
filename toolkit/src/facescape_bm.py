@@ -4,7 +4,7 @@ Bilinear model.
 """
 
 import numpy as np
-from src.mesh_obj import mesh_obj
+from toolkit.src.mesh_obj import mesh_obj
 
 class facescape_bm(object):
     def __init__(self, filename):

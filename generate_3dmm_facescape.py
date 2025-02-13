@@ -18,7 +18,7 @@ class GenerateFullHeadMesh:
             random_id_vec = np.random.normal(self.model.id_mean, np.sqrt(self.model.id_var))
             # create random expression vector
             exp_vec = np.zeros(52)
-            exp_vec[expression_idx] = 1
+            exp_vec[expression_idx] = self.model.exp_var[expression_idx] * np.random.normal(0, 1)
             # generate full head mesh
             mesh_full = self.model.gen_full(random_id_vec, exp_vec)
             dest_dir = os.path.join(self.output_path, str(id))

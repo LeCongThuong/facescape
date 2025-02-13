@@ -13,18 +13,21 @@ class GenerateFullHeadMesh:
         self.output_path = output_path
         self.texture_path_list = list(Path(texture_dir).rglob("*.mtl"))
 
-    def generate_geometry_mesh(self, name_path, id, expression_idx=0):
+    def generate_geometry_mesh(self, name_path, id):
         try:
             random_id_vec = np.random.normal(self.model.id_mean, np.sqrt(self.model.id_var))
             # create random expression vector
             exp_vec = np.zeros(52)
-            exp_vec[expression_idx] = self.model.exp_var[expression_idx] * np.random.normal(0, 1)
+            exp_vec[0] = 1
+            exp_vec[np.random.randint(52)] = 1
             # generate full head mesh
             mesh_full = self.model.gen_full(random_id_vec, exp_vec)
             dest_dir = os.path.join(self.output_path, str(id))
             Path(dest_dir).mkdir(parents=True, exist_ok=True)
             mesh_full.export(dest_dir, name_path)
         except Exception as e:
+            # remove the directory if the mesh generation fails, to avoid partial meshes
+            shutil.rmtree(dest_dir)
             return False
         self._post_process(name_path, id)
         return True
@@ -68,16 +71,19 @@ class GenerateFullHeadMesh:
             shutil.copy(displacement_path, dest_displacement_file)
         except Exception as e:
             print(e)
+            # remove the directory if the mesh generation fails, to avoid partial meshes
+            dest_dir = os.path.join(self.output_path, str(id))
+            shutil.rmtree(dest_dir)
             return False
         return True
     
     def generate_mesh(self, id):
-        for expression_idx in tqdm(range(52)):
-            if not self.generate_geometry_mesh(f"{str(id)}_{str(expression_idx)}", f"{str(id)}_{str(expression_idx)}", expression_idx):
-                continue
-            if not self.generate_texture_mesh(f"{str(id)}_{str(expression_idx)}", f"{str(id)}_{str(expression_idx)}"):
-                continue
-
+        if not self.generate_geometry_mesh(str(id), str(id)):
+            return False
+        if not self.generate_texture_mesh(str(id), str(id)):
+            return False
+        return True
+    
     def generate_meshes(self, start_idx=0, end_idx=10):
         for i in tqdm(range(start_idx, end_idx)):
             self.generate_mesh(i)

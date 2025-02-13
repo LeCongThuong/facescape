@@ -42,32 +42,32 @@ class GenerateFullHeadMesh:
             file.writelines(output_lines)
     
     def generate_texture_mesh(self, name_path, id):
-        # try:
-        texture_path = random.choice(self.texture_path_list)
-        texture_name = texture_path.stem.split(".")[0]
+        try:
+            texture_path = random.choice(self.texture_path_list)
+            texture_name = texture_path.stem.split(".")[0]
 
-        # copy texture path .mtl to (self.output_path/str(id) and rename it to name_path
-        dest_texture_file = os.path.join(self.output_path, str(id), name_path + ".mtl")
-        shutil.copy(texture_path, dest_texture_file)
-        # replace map_Kd png with name_path.jpg
-        with open(dest_texture_file, "r") as file:
-            lines = file.readlines()
-        for i, line in enumerate(lines):
-            if line.startswith("map_Kd"):
-                lines[i] = f"map_Kd {name_path}.jpg\n"
-                break
-        with open(dest_texture_file, "w") as file:
-            file.writelines(lines)
-        # copy texture path .png to (self.output_path/str(id) and rename it to name_path.jpg
-        dest_texture_file = os.path.join(self.output_path, str(id), name_path + ".jpg")
-        shutil.copy(os.path.join(texture_path.parent, texture_name + ".jpg"), dest_texture_file)
-        displacement_path = os.path.join(list(Path(texture_path).parents)[1], "dpmap", texture_name + ".png")
-        # copy displacement map to (self.output_path/str(id) and rename it to name_path.jpg
-        dest_displacement_file = os.path.join(self.output_path, str(id), name_path + ".png")
-        shutil.copy(displacement_path, dest_displacement_file)
-        # except Exception as e:
-        #     print(e)
-        #     return False
+            # copy texture path .mtl to (self.output_path/str(id) and rename it to name_path
+            dest_texture_file = os.path.join(self.output_path, str(id), name_path + ".mtl")
+            shutil.copy(texture_path, dest_texture_file)
+            # replace map_Kd png with name_path.jpg
+            with open(dest_texture_file, "r") as file:
+                lines = file.readlines()
+            for i, line in enumerate(lines):
+                if line.startswith("map_Kd"):
+                    lines[i] = f"map_Kd {name_path}.jpg\n"
+                    break
+            with open(dest_texture_file, "w") as file:
+                file.writelines(lines)
+            # copy texture path .png to (self.output_path/str(id) and rename it to name_path.jpg
+            dest_texture_file = os.path.join(self.output_path, str(id), name_path + ".jpg")
+            shutil.copy(os.path.join(texture_path.parent, texture_name + ".jpg"), dest_texture_file)
+            displacement_path = os.path.join(list(Path(texture_path).parents)[1], "dpmap", texture_name + ".png")
+            # copy displacement map to (self.output_path/str(id) and rename it to name_path.jpg
+            dest_displacement_file = os.path.join(self.output_path, str(id), name_path + ".png")
+            shutil.copy(displacement_path, dest_displacement_file)
+        except Exception as e:
+            print(e)
+            return False
         return True
     
     def generate_mesh(self, id):

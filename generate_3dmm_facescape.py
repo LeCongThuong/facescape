@@ -16,6 +16,8 @@ class GenerateFullHeadMesh:
     def generate_geometry_mesh(self, name_path, id):
         try:
             random_id_vec = np.random.normal(self.model.id_mean, np.sqrt(self.model.id_var))
+            if random_id_vec[0]>0:
+                random_id_vec = -random_id_vec
             # create random expression vector
             exp_vec = np.zeros(52)
             exp_vec[0] = 1

@@ -72,12 +72,12 @@ class GenerateFullHeadMesh:
         return True
     
     def generate_mesh(self, id):
-        for expression_idx in range(52):
+        for expression_idx in tqdm(range(52)):
             if not self.generate_geometry_mesh(f"{str(id)}_{str(expression_idx)}", f"{str(id)}_{str(expression_idx)}", expression_idx):
                 continue
             if not self.generate_texture_mesh(f"{str(id)}_{str(expression_idx)}", f"{str(id)}_{str(expression_idx)}"):
                 continue
-            
+
     def generate_meshes(self, start_idx=0, end_idx=10):
         for i in tqdm(range(start_idx, end_idx)):
             self.generate_mesh(i)

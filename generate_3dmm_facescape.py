@@ -5,6 +5,7 @@ from toolkit.src.facescape_bm import facescape_bm
 import random
 import shutil
 from tqdm import tqdm
+import argparse
 
 class GenerateFullHeadMesh:
     def __init__(self, model_path, output_path, texture_dir):
@@ -79,17 +80,31 @@ class GenerateFullHeadMesh:
                 return False
             print("Generate texture mesh done!")
 
-    def generate_meshes(self, num_meshes):
-        for i in tqdm(range(num_meshes)):
+    def generate_meshes(self, start_idx=0, end_idx=10):
+        for i in tqdm(range(start_idx, end_idx)):
             if not self.generate_mesh(i):
                 return False
         return True
 
+def main():
+    parser = argparse.ArgumentParser(description="Generate full head meshes from a model.")
+    parser.add_argument("--model_path", type=str, required=True, help="Path to the 3D model file.")
+    parser.add_argument("--output_path", type=str, required=True, help="Directory to save generated meshes.")
+    parser.add_argument("--texture_dir", type=str, required=True, help="Directory containing textures.")
+    parser.add_argument("--start_idx", type=int, default=0, help="Start index for mesh generation.")
+    parser.add_argument("--end_idx", type=int, default=10, help="End index for mesh generation.")
     
+    args = parser.parse_args()
+    
+    head_mesh = GenerateFullHeadMesh(args.model_path, args.output_path, args.texture_dir)
+    head_mesh.generate_meshes(start_idx=args.start_idx, end_idx=args.end_idx)
+
 if __name__ == "__main__":
-    model_path = "/media/hmi/Transcend/facescape_bilinear_model_v1_6/facescape_bm_v1.6_847_50_52_id_front.npz"
-    output_path = "/home/hmi/Downloads/temp_imgs_5"
-    texture_dir =  "/media/hmi/Transcend/facescape_tu/" 
-    # GenerateFullHeadMesh(model_path, output_path, texture_dir).generate_mesh("test", 1)
-    head_mesh = GenerateFullHeadMesh(model_path, output_path, texture_dir)
-    head_mesh.generate_meshes(10)
+    main()
+
+
+# python generate_3dmm_facescape.py --model_path "/media/hmi/Transcend/facescape_bilinear_model_v1_6/facescape_bm_v1.6_847_50_52_id_front.npz" \
+#                  --output_path "/home/hmi/Downloads/temp_imgs_5" \
+#                  --texture_dir "/media/hmi/Transcend/facescape_tu/" \
+#                  --start_idx 0 \
+#                  --end_idx 10

@@ -82,8 +82,8 @@ class GenerateFullHeadMesh:
             return False
         return True
     
-    def _save_to_json(json_dict, output_json_file):
-        with open('data.json', 'w', encoding='utf-8') as f:
+    def _save_to_json(self, json_dict, output_json_file):
+        with open(output_json_file, 'w', encoding='utf-8') as f:
             json.dump(json_dict, f, ensure_ascii=False, indent=4)
     
     def generate_meshes(self, start_idx=0, end_idx=10, output_json_file=None):
@@ -116,7 +116,7 @@ def main():
     args = parser.parse_args()
     
     head_mesh = GenerateFullHeadMesh(args.model_path, args.output_path, args.material_dir)
-    head_mesh.generate_meshes(start_idx=args.start_idx, end_idx=args.end_idx, output_json=args.output_json)
+    head_mesh.generate_meshes(start_idx=args.start_idx, end_idx=args.end_idx, output_json_file=args.output_json)
 
 if __name__ == "__main__":
     main()

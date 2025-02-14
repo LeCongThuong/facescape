@@ -10,10 +10,10 @@ import json
 
 
 class GenerateFullHeadMesh:
-    def __init__(self, model_path, output_path, texture_dir):
+    def __init__(self, model_path, output_path, material_dir):
         self.model = facescape_bm(model_path)
         self.output_path = output_path
-        self.mtl_path_list = list(Path(texture_dir).rglob("*.mtl"))
+        self.mtl_path_list = list(Path(material_dir).rglob("*.mtl"))
 
     def generate_geometry_mesh(self, name_path, id):
         try:
@@ -115,7 +115,7 @@ def main():
 
     args = parser.parse_args()
     
-    head_mesh = GenerateFullHeadMesh(args.model_path, args.output_path, args.texture_dir)
+    head_mesh = GenerateFullHeadMesh(args.model_path, args.output_path, args.material_dir)
     head_mesh.generate_meshes(start_idx=args.start_idx, end_idx=args.end_idx, output_json=args.output_json)
 
 if __name__ == "__main__":

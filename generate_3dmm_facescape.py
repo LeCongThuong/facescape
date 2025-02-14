@@ -46,6 +46,7 @@ class GenerateFullHeadMesh:
         # Write back to the OBJ file
         with open(obj_file, "w") as file:
             file.writelines(output_lines)
+
     
     def generate_texture_mesh(self, name_path, id):
         try:
@@ -55,15 +56,7 @@ class GenerateFullHeadMesh:
             # copy texture path .mtl to (self.output_path/str(id) and rename it to name_path
             dest_texture_file = os.path.join(self.output_path, str(id), name_path + ".mtl")
             shutil.copy(texture_path, dest_texture_file)
-            # replace map_Kd png with name_path.jpg
-            with open(dest_texture_file, "r") as file:
-                lines = file.readlines()
-            for i, line in enumerate(lines):
-                if line.startswith("map_Kd"):
-                    lines[i] = f"map_Kd {name_path}.jpg\n"
-                    break
-            with open(dest_texture_file, "w") as file:
-                file.writelines(lines)
+            self._add_texture_to_mtl(f"{name_path}.jpg", dest_texture_file)
             # copy texture path .png to (self.output_path/str(id) and rename it to name_path.jpg
             dest_texture_file = os.path.join(self.output_path, str(id), name_path + ".jpg")
             shutil.copy(os.path.join(texture_path.parent, texture_name + ".jpg"), dest_texture_file)
@@ -78,6 +71,17 @@ class GenerateFullHeadMesh:
             shutil.rmtree(dest_dir)
             return False
         return True
+    
+    def _add_texture_to_mtl(self, texture_img_path, dest_texture_file):
+        # replace map_Kd png with name_path.jpg
+        with open(dest_texture_file, "r") as file:
+            lines = file.readlines()
+        for i, line in enumerate(lines):
+            if line.startswith("map_Kd"):
+                lines[i] = f"map_Kd {texture_img_path}\n"
+                break
+        with open(dest_texture_file, "w") as file:
+            file.writelines(lines)
     
     def generate_mesh(self, id):
         if not self.generate_geometry_mesh(str(id), str(id)):
@@ -98,7 +102,7 @@ def main():
     parser.add_argument("--texture_dir", type=str, required=True, help="Directory containing textures.")
     parser.add_argument("--start_idx", type=int, default=0, help="Start index for mesh generation.")
     parser.add_argument("--end_idx", type=int, default=10, help="End index for mesh generation.")
-    
+
     args = parser.parse_args()
     
     head_mesh = GenerateFullHeadMesh(args.model_path, args.output_path, args.texture_dir)

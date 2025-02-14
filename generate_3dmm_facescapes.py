@@ -87,7 +87,7 @@ class GenerateFullHeadMesh:
             json.dump(json_dict, f, ensure_ascii=False, indent=4)
     
     def generate_meshes(self, start_idx=0, end_idx=10, output_json_file=None):
-        outputs = {}
+        outputs = []
         for i in tqdm(range(start_idx, end_idx)):
             mtl_path = random.choice(self.mtl_path_list)
             mtl_name = mtl_path.stem.split(".")[0]
@@ -97,9 +97,10 @@ class GenerateFullHeadMesh:
 
             isSuccess = self.generate_mesh(i, mtl_path, uv_map_path)
             if isSuccess:
-                outputs[i] = {
+                outputs.append({
+                    "obj_file": os.path.join(self.output_path, str(i), str(i) + ".obj"),
                     "displacement_image": displacement_path
-                }
+                })
 
         self._save_to_json(outputs, output_json_file=output_json_file)
         return True
